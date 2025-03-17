@@ -9,7 +9,7 @@ const SignUp = () => {
     const router = useRouter();
 
     const signUp = () => {
-        router.push('/loginpage');
+        router.push('/login');
     };
 
     const [newUser, setNewUser] = useState({
@@ -17,7 +17,7 @@ const SignUp = () => {
         email: "",
         password: "",
         password2: "",
-        progress: 0, 
+        progress: 0,
         phoneNumber: "0"
     });
 
@@ -56,7 +56,7 @@ const SignUp = () => {
         }));
     };
 
-   
+
     const validateEmail = (email: string) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         return emailRegex.test(email);
@@ -66,7 +66,7 @@ const SignUp = () => {
     const trackProgress = () => {
         let progressValue = 0;
 
-     
+
         if (validateEmail(newUser.email)) {
             progressValue += 25;
         }
@@ -75,7 +75,7 @@ const SignUp = () => {
             progressValue += 25;
         }
 
-        
+
         if (newUser.name.length > 2) {
             progressValue += 25;
         }
@@ -96,40 +96,47 @@ const SignUp = () => {
     useEffect(() => {
         trackProgress();
         console.log(newUser);
-        
+
     }, [newUser.email, newUser.password, newUser.password2, newUser.name, newUser.phoneNumber]);
 
     //send data to backend and jump back to homepage
-const createAccount =async ()=>{
-    try {
-        const response = await fetch('http://localhost:3030/user/login', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const data = await response.json();
-        console.log(data); // This should log "asdadada"
-    } catch (error) {
-        console.error('Error fetching login:', error);
-    }
-//     try {
-        
-//         const response = await fetch('http://localhost:3002/user/login', {
-//           method: 'GET', 
-//           headers: {
-//             'Content-Type': 'application/json',  
-//           },
-//           body: JSON.stringify(newUser),  
-//         });
-  
-    
-//     } finally{
-//         console.log("done");
-        
-//     }
-    
-}
+
+    const createAccount = async () => {
+
+
+        const data = {
+            username: newUser.name,
+            email: newUser.email,
+            password: newUser.password,
+            password2: newUser.password2,
+            progress: newUser.progress,
+            phoneNumber: newUser.phoneNumber,
+        };
+        console.log('Data being sent to backend:', data);
+        try {
+            const response = await fetch('http://localhost:3030/user/signup', {
+                method: 'POST', // Use POST to send data
+                headers: {
+                    'Content-Type': 'application/json', // Specify that we're sending JSON
+                },
+                body: JSON.stringify(data), // Convert JavaScript object to JSON string
+            });
+
+            if (response.ok) {
+                const result = await response.json(); // Parse the JSON response from the backend
+                console.log('Account created successfully:', result);
+            } else {
+                console.error('Failed to create account:', response.status);
+            }
+        } catch (error) {
+            console.error('Error during fetch:', error);
+        } finally {
+            console.log("done");
+        }
+
+
+    };
+
     return (
         <div className="h-screen flex items-center justify-center bg-gray-200">
             <div
