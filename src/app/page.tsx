@@ -1,9 +1,11 @@
-import Loginpage from "./component/loginpage";
+
 import FoodBadge from "./component/FoodBadge";
+import Category from "./component/category";
 export default function Home() {
   return (
    <div>
-    <FoodBadge/>
+    {/* <FoodBadge/> */}
+    <Category/>
    </div>
   );
 }

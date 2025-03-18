@@ -58,7 +58,7 @@ const LoginPage = () => {
     console.log('Data being sent to backend:', data);
 
     try {
-      const response = await fetch('http://localhost:3030/user/login', {
+      const response = await fetch('http://localhost:3000/user/login', {
         method: 'POST', // Use POST for login
         headers: {
           'Content-Type': 'application/json',

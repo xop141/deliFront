@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress"
 
 const SignUp = () => {
     const router = useRouter();
+    const [msg, setMsg] = useState<string | null>(null);
 
     const signUp = () => {
         router.push('/login');
@@ -66,15 +67,13 @@ const SignUp = () => {
     const trackProgress = () => {
         let progressValue = 0;
 
-
         if (validateEmail(newUser.email)) {
             progressValue += 25;
         }
 
-        if (newUser.password.length > 8 && newUser.password === newUser.password2) {
+        if (newUser.password.length >= 8 && newUser.password === newUser.password2) {
             progressValue += 25;
         }
-
 
         if (newUser.name.length > 2) {
             progressValue += 25;
@@ -95,15 +94,10 @@ const SignUp = () => {
     // Update progress when email, password, password2, username, or number changes
     useEffect(() => {
         trackProgress();
-        console.log(newUser);
-
     }, [newUser.email, newUser.password, newUser.password2, newUser.name, newUser.phoneNumber]);
 
-    //send data to backend and jump back to homepage
-
+    // Send data to backend and jump back to homepage
     const createAccount = async () => {
-
-
         const data = {
             username: newUser.name,
             email: newUser.email,
@@ -112,30 +106,37 @@ const SignUp = () => {
             progress: newUser.progress,
             phoneNumber: newUser.phoneNumber,
         };
-        console.log('Data being sent to backend:', data);
+
         try {
             const response = await fetch('http://localhost:3030/user/signup', {
-                method: 'POST', // Use POST to send data
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // Specify that we're sending JSON
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data), // Convert JavaScript object to JSON string
+                body: JSON.stringify(data),
             });
 
             if (response.ok) {
-                const result = await response.json(); // Parse the JSON response from the backend
+                const result = await response.json();
                 console.log('Account created successfully:', result);
+                // You could navigate to another page, or display a success message here
             } else {
-                console.error('Failed to create account:', response.status);
+                const errorData = await response.json();
+             
+                console.log(errorData.message);
+                
+               alert(errorData.message)
+                setMsg(errorData.message);  // Set the formatted error message
+                return;
             }
         } catch (error) {
             console.error('Error during fetch:', error);
         } finally {
             console.log("done");
         }
-
-
     };
+
+    
 
     return (
         <div className="h-screen flex items-center justify-center bg-gray-200">
@@ -157,7 +158,7 @@ const SignUp = () => {
                         <input
                             type="text"
                             placeholder="Username"
-                            className="w-full px-4 py-2 border-b-2 border-white bg-transparent text-white focus:outline-none focus:border-white"
+                            className={`w-full px-4 py-2 border-b-2 border-white bg-transparent text-white focus:outline-none focus:border-white`}
                             value={newUser.name}
                             onChange={handleUsernameChange}
                         />
@@ -203,6 +204,7 @@ const SignUp = () => {
                         />
                     </div>
 
+
                     <div className="text-sm text-white mb-6">
                         or <span className="font-bold cursor-pointer" onClick={signUp}>already have an account</span>
                     </div>
@@ -210,7 +212,7 @@ const SignUp = () => {
                     <button
                         className={`w-full py-2 border-2 border-white text-white rounded-full transition duration-300 
                             ${newUser.progress === 100 ? 'bg-black hover:bg-white hover:text-gray-800' : 'cursor-not-allowed'}`}
-                        disabled={newUser.progress !== 100} // Disable button when progress is not 100
+                        disabled={newUser.progress !== 100} 
                         onClick={createAccount}
                     >
                         Create Account
