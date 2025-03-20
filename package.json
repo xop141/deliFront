@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@material-tailwind/react": "^2.1.10",
     "@radix-ui/react-progress": "^1.1.2",
+    "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.479.0",
@@ -18,7 +20,8 @@
     "react-dom": "^19.0.0",
     "swiffy-slider": "^1.6.0",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "typography": "^0.16.24"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
