@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import FoodBadge from './FoodBadge'
+import CategoryList from './category'
 
 interface Food {
     foodName: string;
@@ -12,7 +13,7 @@ const Homepage = () => {
     const [foods, setFoods] = useState<Food[]>([]) // State type is an array of Food objects
 
     useEffect(() => {
-        // Make sure you are handling the response correctly
+
        axios.get("http://localhost:3030/food/getFOOD")
             .then(function (response) {
                 // Assuming response.data.data is the array of food objects
@@ -23,14 +24,15 @@ const Homepage = () => {
             .catch((error) => {
                 console.error("Error fetching data:", error)
             })
-    }, []) // Empty dependency array ensures this runs only once when the component mounts
+    }, [])
 
     return (
-        <div>
+        <div className=' px-[90px]'>
+            <CategoryList/>
             {foods.length > 0 ? (
                 <FoodBadge data={foods} />
             ) : (
-                <p>Loading...</p> // Display a loading message if data is still being fetched
+                <p>Loading...</p> 
             )}
          
         </div>

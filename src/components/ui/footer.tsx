@@ -1,16 +1,17 @@
 import React from 'react'
-
+import FooterBOTTOM from './footerBOTTOM'
+import Marquee from 'react-fast-marquee'
 const footer = () => {
   return (
     <div className='bg-[#18181B]'>
-      <div className='bg-red-500 w-full h-fit py-[30px] text-[32px] font-[600] text-white'>asd</div>
-<div>asd</div>
-      <div className='flex px-[88px] text-[#71717A] gap-[48px] py-[32px] '>
-        <p>Copy right 2024 © Nomnom LLC</p>
-        <p>Privacy policy  </p>
-        <p>Terms and conditoin</p>
-        <p>Cookie policy</p>
-      </div>
+  
+      <Marquee className='text-white bg-[#EF4444] text-[30px] font-[600] py-[28px] flex gap-[40px]' autoFill speed={0}>
+
+<p className='px-[40px]'>FAST AS FUCK</p>
+
+</Marquee>
+ 
+      <FooterBOTTOM/>
     </div>
   )
 }
