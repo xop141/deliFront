@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { EyeOff, Eye } from "lucide-react";
+import axios, { AxiosError } from "axios"; 
 
 const LoginPage = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const LoginPage = () => {
 
   const [background, setBackground] = useState(false);
   const [isShow, setIsshow] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<string[]>([]); // State to store error messages
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   const handleEmailChange = (e: any) => {
     setUser(prevState => ({
@@ -55,36 +56,24 @@ const LoginPage = () => {
       password: user.password,
     };
 
-    console.log('Data being sent to backend:', data);
-
     try {
-      const response = await fetch('http://localhost:3000/user/login', {
-        method: 'POST', // Use POST for login
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // Send the user credentials
-      });
+ 
+      const response = await axios.post("http://localhost:3030/user/login", data);
 
-      const result = await response.json(); // Parse the response body
+      console.log('Login successful:', response.data);
 
-      if (!response.ok) {
-        // If the response isn't OK, display the message from the backend
-        setErrorMessages([result.message || 'An error occurred.']);
-        return;
-      }
-
-      console.log(result); // Log the result (e.g., token, user data, etc.)
-
-      // Clear error messages if login is successful
+      
       setErrorMessages([]);
 
-      // Handle successful login (you can redirect or save tokens here)
-      router.push('/dashboard'); // Redirect user after login
+
+      localStorage.setItem('token', response.data.token);
+
+
+      router.push('/');
+      
     } catch (error) {
-      console.error('Error during fetch:', error);
-      setErrorMessages(['An error occurred during login. Please try again.']); // Handle network errors
-    }
+      console.error('Error during login:', error);  
+  }
   };
 
   return (
@@ -152,4 +141,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginPage

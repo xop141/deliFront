@@ -18,7 +18,7 @@ const Homepage = () => {
             .then(function (response) {
                 // Assuming response.data.data is the array of food objects
                 setFoods(response.data) // Update the foods state with the array
-                console.log(response.data);
+               
                 
             })
             .catch((error) => {
@@ -31,10 +31,12 @@ const Homepage = () => {
             <CategoryList/>
             {foods.length > 0 ? (
                 <FoodBadge data={foods} />
+          
+                
             ) : (
                 <p>Loading...</p> 
             )}
-         
+   
         </div>
     )
 }
