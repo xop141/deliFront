@@ -32,14 +32,15 @@ const CategoryList: React.FC = () => {
       <h1 className='text-[36px] font-[600] text-white'>Categories</h1>
       <div className='flex gap-[10px]'>
         {categories.map((category) => (
-          <div
-            key={category._id}
-            className={`h-[36px] rounded-[12px] flex justify-center items-center p-[10px] 
-              ${selectedCategoryId === category.categoryName ? 'bg-red-500 text-white' : 'bg-gray-200'}`}
-            onClick={() => handleColorChange(category.categoryName)}
-          >
-            {category.categoryName}
-          </div>
+        <div
+        key={category._id}
+        className={`h-[36px] rounded-[12px] flex justify-center items-center p-[10px] 
+          ${selectedCategoryId === category.categoryName ? 'bg-red-500 text-white' : 'bg-gray-200'} cursor-pointer`}
+        onClick={() => handleColorChange(category.categoryName)}
+      >
+        {category.categoryName}
+      </div>
+      
         ))}
       </div>
     </div>

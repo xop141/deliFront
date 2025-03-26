@@ -92,7 +92,8 @@ const SignUp = () => {
             "url('https://pexels.imgix.net/photos/27718/pexels-photo-27718.jpg?fit=crop&w=1280&h=823')",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-purple-500 opacity-85"></div>
+<div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900 opacity-90"></div>
+
 
         <div className="relative z-10 p-6 flex flex-col items-center">
           {/* Progress bar */}

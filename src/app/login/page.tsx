@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { EyeOff, Eye } from "lucide-react";
-import axios, { AxiosError } from "axios"; 
+import axios, { AxiosError } from "axios";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -57,23 +57,26 @@ const LoginPage = () => {
     };
 
     try {
- 
       const response = await axios.post("http://localhost:3030/user/login", data);
 
-      console.log('Login successful:', response.data);
-
-      
+      // Clear error messages in case of success
       setErrorMessages([]);
 
-
+      // Store token in localStorage
       localStorage.setItem('token', response.data.token);
 
-
+      // Redirect to homepage
       router.push('/');
-      
-    } catch (error) {
-      console.error('Error during login:', error);  
-  }
+    } catch (error: AxiosError) {
+      // Check if it's an AxiosError
+      if (axios.isAxiosError(error)) {
+        const errorResponse = error.response?.data;
+        // Handle error messages and display them
+        setErrorMessages([errorResponse?.message || "An error occurred during login."]);
+      } else {
+        setErrorMessages(["An unexpected error occurred."]);
+      }
+    }
   };
 
   return (
@@ -81,7 +84,7 @@ const LoginPage = () => {
       <div className="relative w-96 h-140 bg-cover bg-center rounded-lg shadow-xl overflow-hidden"
         style={{ backgroundImage: "url('https://pexels.imgix.net/photos/27718/pexels-photo-27718.jpg?fit=crop&w=1280&h=823')" }}>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-purple-500 opacity-85"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900 opacity-90"></div>
 
         <div className="relative z-10 p-6 flex flex-col items-center">
           <div className="text-4xl font-thin text-white mt-24 mb-4">Hello There!</div>
@@ -141,4 +144,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage
+export default LoginPage;

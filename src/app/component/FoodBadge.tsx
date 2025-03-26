@@ -1,135 +1,166 @@
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import product from '../img/Food Image.png';
-import { CirclePlus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation'; // Import useSearchParams
-import axios from 'axios';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-interface Food {
-  _id: string; // Add the _id field here
-  foodName: string;
-  price: number;
-  ingredients: string;
-  category?: string; // Add the optional category field if it's used for filtering
-}
+  import React, { useState, useEffect } from 'react';
+  import Image from 'next/image';
+  import product from '../img/Food Image.png';
+  import { CirclePlus } from 'lucide-react';
+  import { useRouter } from 'next/navigation';
+  import { useSearchParams } from 'next/navigation';
+  import { CircleMinus } from 'lucide-react';
+  import { Button } from "@/components/ui/button"
+  import axios from 'axios';
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+  import { Skeleton } from '@/components/ui/skeleton';
+  interface Food {
+    _id: string;
+    foodName: string;
+    price: number;
+    ingredients: string;
+    category?: string;
+  }
 
-interface FoodBadgeProps {
-  data: Food[];
-}
+  interface FoodBadgeProps {
+    data: Food[];
+  }
 
-const FoodBadge: React.FC<FoodBadgeProps> = ({ data }) => {
-  const router = useRouter();
-  const searchParams = useSearchParams(); // Use useSearchParams to access query parameters
+  const FoodBadge: React.FC<FoodBadgeProps> = ({ data }) => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [count, setCount] = useState(1);
+    const [filtered, setFiltered] = useState<Food[]>([]);
+    const [successMessage, setSuccessMessage] = useState<string>('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false); // Track button disable state
 
-  const [filtered, setFiltered] = useState<Food[]>([]);
-  const [loading, setLoading] = useState(false);
+    useEffect(() => {
+      const id = searchParams.get('id');
+      if (id) {
+        setFiltered(data.filter((food) => food.category === id));
+      } else {
+        setFiltered(data);
+      }
+    }, [searchParams, data]);
 
+    const orderButton = async (id: string) => {
+      const token = window.localStorage.getItem('token');
+      if (!token) {
+        router.push("/login");
+        return;
+      }
 
-  useEffect(() => {
-    const id = searchParams.get('id');
-    if (id) {
-      // Filter foods based on the category (assuming category is a field in your data)
-      setFiltered(data.filter((food) => food.category === id));
-    } else {
-      setFiltered(data); // No filter, so use all the foods
-    }
-  }, [searchParams, data]); // Add 'data' to the dependencies to recompute if food data changes
+      const order = {
+        id: id,
+        quantity: count,
+        token: token,
+      };
 
-  const orderButton = async (id: string) => {
+    
+      setIsButtonDisabled(true); // Disable the button when the order is being processed
 
-    const token = window.localStorage.getItem('token');
-
-
-    if (!token) {
-      router.push("/login")
-      return;
-    }
-
-    const order = {
-      id: id,//ordered food id
-      quantity: 2,
-      token: token
+      try {
+        const response = await axios.post("http://localhost:3030/order", order);
+        console.log('Order placed successfully:', response.data);
+        timer();
+      } catch (err) {
+        console.log(err);
+        setSuccessMessage("Failed to place the order. Please try again.");
+      } finally {
+        setIsButtonDisabled(false); // Re-enable the button after request is finished
+      }
+      setCount(1);
     };
 
-    setLoading(true); // Set loading state to true while waiting for the API response
+    const add = () => {
+      setCount(count + 1);
+    };
 
-    try {
-      const response = await axios.post("http://localhost:3030/order", order);
-      console.log('Order placed successfully:', response.data);
+    const minus = () => {
+      if (count > 1) {
+        setCount(count - 1);
+      }
+    };
 
-      // Optionally, show a success message or do something else (e.g., navigate)
-    } catch (err) {
-      console.log(err);
+    const timer = () => {
+      setSuccessMessage("Order placed successfully!");
+      setTimeout(() => {
+        setSuccessMessage(""); // Clear the success message after 2 seconds
+      }, 2000);
+    };
 
+    return (
 
-    } finally {
-      setLoading(false); // Reset loading state after request completes
-    }
+      <div className="flex gap-6 flex-row flex-wrap ">
+        {filtered.map((food, index) => (
+          <Dialog key={index}>
+            <DialogTrigger
+              className="bg-white p-6 w-[390px] flex flex-col gap-6 rounded-[25px] shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+            >
+              <div className="relative">
+                <Image src={product} alt="product img" className="rounded-lg w-full h-[250px] object-cover" />
+                {/* <CirclePlus className="text-white absolute right-4 bottom-4 w-10 h-10 hover:text-red-700" /> */}
+              </div>
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center font-semibold">
+                  <p className="text-red-500 text-xl">{food.foodName}</p>
+                  <p className="text-lg">{food.price} $</p>
+                </div>
+                <p className="text-sm text-gray-600">{food.ingredients}</p>
+              </div>
+            </DialogTrigger>
+    
+            <DialogContent>
+              <DialogTitle className="text-3xl text-red-500 font-bold">
+                {food.foodName}
+                <div className="text-gray-800 font-normal text-xl mt-2">{food.ingredients}</div>
+              </DialogTitle>
+    
+              <DialogDescription className="text-gray-800 font-normal text-lg mt-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-sm text-gray-600">Total price :</div>
+                    <p className="text-xl text-red-500">${food.price}</p>
+                  </div>
+                  <div className="flex gap-4 items-center">
+                    <button
+                      disabled={count === 1}
+                      onClick={minus}
+                      className="bg-gray-300 text-gray-700 p-2 rounded-full hover:bg-gray-400 transition-colors duration-200"
+                    >
+                      <CircleMinus />
+                    </button>
+                    <p className="text-lg font-semibold">{count}</p>
+                    <button
+                      onClick={add}
+                      className="bg-gray-300 text-gray-700 p-2 rounded-full hover:bg-gray-400 transition-colors duration-200"
+                    >
+                      <CirclePlus />
+                    </button>
+                  </div>
+                </div>
+    
+                <Button
+                  className="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition-all duration-300"
+                  onClick={() => orderButton(food._id)}
+                  disabled={isButtonDisabled} // Disable button when processing
+                >
+                  Place order
+                </Button>
+    
+                {successMessage && (
+                  <p className="text-green-600 mt-3 text-sm">{successMessage}</p>
+                )}
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
+        ))}
+      </div>
+
+    
+    );
   };
 
-  return (
-    <div >
-      {/* {filtered.map((food, index) => (
-        <div
-          key={index}
-          className='h-fit bg-gray-300 p-[16px] w-[390px] flex flex-col gap-[20px] rounded-[20px] opacity-[0.1]'
-        >
-          <div className='relative'>
-            <Image src={product} alt='product img' className='rounded-[20px]' />
-            <CirclePlus className='text-white absolute right-[20px] bottom-[20px] w-[44px] h-[44px]' onClick={() => orderButton(food._id)} />
-          </div>
-          <div className='flex flex-col'>
-            <div className='flex justify-between font-[600]'>
-              <p className='text-red-500 text-[24px]'>{food.foodName}</p>
-              <p className='text-[18px]'>{food.price} $</p>
-            </div>
-            <h1 className='h-full w-fit'>
-              {food.ingredients}
-            </h1>
-          </div>
-        </div>
-      ))}  */}
-
-
-
-
-      <div className='flex gap-[20px] flex-wrap'>
-         {filtered.map((food, index) => (
-          <Dialog    key={index}>
-        <DialogTrigger
-       
-          className='h-fit bg-gray-300 p-[16px] w-[390px] flex flex-col gap-[20px] rounded-[20px] opacity-[1]'
-        >
-         
-          <div className='relative'>
-            <Image src={product} alt='product img' className='rounded-[20px]' />
-            <CirclePlus className='text-white absolute right-[20px] bottom-[20px] w-[44px] h-[44px]' onClick={() => orderButton(food._id)} />
-          </div>
-          <div className='flex flex-col'>
-            <div className='flex justify-between font-[600]'>
-              <p className='text-red-500 text-[24px]'>{food.foodName}</p>
-              <p className='text-[18px]'>{food.price} $</p>
-            </div>
-            <h1 className='h-full w-fit'>
-              {food.ingredients}
-            </h1>
-          </div>
-        
-        </DialogTrigger>
-        </Dialog>
-      ))}
-</div>
-    </div>
-
-  );
-};
-
-export default FoodBadge;
+  export default FoodBadge;
