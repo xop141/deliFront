@@ -11,11 +11,9 @@
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogHeader,
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-  import { Skeleton } from '@/components/ui/skeleton';
   interface Food {
     _id: string;
     foodName: string;

@@ -84,7 +84,7 @@ const LoginPage = () => {
       <div className="relative w-96 h-140 bg-cover bg-center rounded-lg shadow-xl overflow-hidden"
         style={{ backgroundImage: "url('https://pexels.imgix.net/photos/27718/pexels-photo-27718.jpg?fit=crop&w=1280&h=823')" }}>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-800 to-gray-900 opacity-90"></div>
+<div className="absolute inset-0 bg-gradient-to-b from-red-500 via-red-600 to-blue-500 opacity-80"></div>
 
         <div className="relative z-10 p-6 flex flex-col items-center">
           <div className="text-4xl font-thin text-white mt-24 mb-4">Hello There!</div>
