@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { EyeOff, Eye } from "lucide-react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -20,14 +20,14 @@ const LoginPage = () => {
   const [isShow, setIsshow] = useState(false);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(prevState => ({
       ...prevState,
       email: e.target.value
     }));
   };
 
-  const handlePasswordChange = (e: any) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser(prevState => ({
       ...prevState,
       password: e.target.value
@@ -67,7 +67,7 @@ const LoginPage = () => {
 
       // Redirect to homepage
       router.push('/');
-    } catch (error: AxiosError) {
+    } catch (error) {
       // Check if it's an AxiosError
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data;
