@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"
 import { Skeleton } from "@/components/ui/skeleton"
 
 // Define the type for the order response
@@ -13,9 +13,17 @@ interface Order {
 }
 
 const Page = () => {
-  const token = window.localStorage.getItem('token');
+  const [token, setToken] = useState<string | null>(null); // State to store the token
   const [response, setResponse] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Only fetch the token after the component mounts (client-side)
+  useEffect(() => {
+    if (typeof window !== "undefined") { // Check if running on the client-side
+      const savedToken = window.localStorage.getItem('token');
+      setToken(savedToken);
+    }
+  }, []); // This effect runs once when the component mounts
 
   useEffect(() => {
     if (token) {
@@ -41,16 +49,12 @@ const Page = () => {
   return (
     <div className=' py-8 h-full'>
       {loading ? (
-
         <div className="flex gap-4 flex-col">
           <Skeleton className="px-[24px] py-[16px] rounded-[12px] shadow-lg w-full max-w-[600px] mx-auto mb-6 h-[150px]" />
           <Skeleton className="px-[24px] py-[16px] rounded-[12px] shadow-lg w-full max-w-[600px] mx-auto mb-6 h-[150px]" />
           <Skeleton className="px-[24px] py-[16px] rounded-[12px] shadow-lg w-full max-w-[600px] mx-auto mb-6 h-[150px]" />
-   
-     
         </div>
       ) : (
-        // Map through orders and render them when not loading
         <div className='flex h-fit flex-col'>
           {response.map((order, index) => (
             <div key={index} className="flex flex-col md:flex-row gap-[20px] bg-white px-[24px] py-[16px] rounded-[12px] shadow-lg w-full max-w-[600px] mx-auto mb-6">
