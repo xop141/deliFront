@@ -6,8 +6,7 @@ import logo from '../../app/img/logo.png'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { ShoppingCart } from 'lucide-react';
-import { CircleUserRound } from 'lucide-react';
-import axios from 'axios'
+
 
 const Header = () => {
   const [token, setToken] = useState<string | null>(null); // State to store the token

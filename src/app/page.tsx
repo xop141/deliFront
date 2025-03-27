@@ -1,6 +1,4 @@
 
-import FoodBadge from "./component/FoodBadge";
-import Category from "./component/category";
 import Homepage from "./component/homepage";
 export default function Home() {
   return (
