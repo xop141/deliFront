@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
 import FoodBadge from '@/app/component/FoodBadge'
+import CategoryList from '@/app/component/category'
 // Define the type for the data returned from the API (Food in this case)
 interface Food {
   _id: string;
@@ -15,30 +16,31 @@ interface Food {
 
 const Page = () => {
   const param = useParams()
-  const category = param.id // Get the 'id' parameter from the URL
+  const category = param.id 
 
   const [data, setData] = useState<Food[] | null>(null) // State to store food data
-
-  // Fetch data when the `id` parameter is available
   useEffect(() => {
-    if (category) {
-      const fetchData = async () => {
-        try {
-          const res = await axios.post("http://localhost:3030/category/search", { category });
-          console.log(res.data);
-          setData(res.data); // Set the fetched data to the state
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
+    // Fetch all categories and their first 5 foods
+    const fetchCategoriesAndFoods = async () => {
+      try {
+        const response = await axios.post('http://localhost:3030/food/list', {categoryName: category});
+        setData(response.data);
+        console.log(response.data);
+       
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-      fetchData();
-    }
-  }, [category]); // Only re-run when `category` changes
+    };
 
+    fetchCategoriesAndFoods();  // Fetch data when the component mounts
+  }, []);
+ 
   return (
-    <div>
+    <div className='bg-black w-full'>
       {data ? (
-       <FoodBadge data={data}/>
+
+       <FoodBadge data={data}  />
+
       ) : (
         <div>No data available</div>
       )}

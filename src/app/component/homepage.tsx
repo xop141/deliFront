@@ -1,10 +1,10 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import FoodBadge from './FoodBadge'; // Assuming it's already set up
+
 import CategoryList from './category'; // Assuming it's already set up
 import { Skeleton } from '@/components/ui/skeleton'; // Import Skeleton component
-
+import FoodList from './foodList';
 // Updated Food interface with _id and ingredients
 interface Food {
   _id: string; // Assuming each food item has an '_id' field
@@ -53,7 +53,9 @@ const Homepage = () => {
           ))}
         </div>
       ) : (
-        <FoodBadge data={foods} /> // Pass foods as the prop
+      
+<div><FoodList/></div>
+        
       )}
     </div>
   );

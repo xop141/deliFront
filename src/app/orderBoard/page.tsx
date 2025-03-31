@@ -35,7 +35,7 @@ const Page = () => {
         axios
           .post("http://localhost:3030/order/all", { userId: data })
           .then((response) => {
-            console.log(response.data); // Check the structure of the response
+           
             setResponse(response.data); // Set response state
           })
           .catch((error) => {
