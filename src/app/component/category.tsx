@@ -8,11 +8,18 @@ type Category = {
   _id: string;
   categoryName: string;
 };
+interface Food {
+  _id: string;
+  foodName: string;
+  price: number;
+  ingredients: string;
+  category?: string; // category could be optional or required based on your data
+}
 
 const CategoryList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [data, setData] = useState<any[]>([]); // To store the food data
+  const [data, setData] = useState<Food[]>([]); // To store the food data
   const router = useRouter();
 
   // Fetch categories from the API using axios
