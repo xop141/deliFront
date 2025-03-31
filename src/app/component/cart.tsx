@@ -1,10 +1,9 @@
-"use client"
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
-const page = () => {
+const Cart = () => {
     const router = useRouter();
     const [data, setData] = useState<any[]>([]);
     const token = localStorage.getItem('token');
@@ -68,6 +67,4 @@ const page = () => {
     );
 };
 
-export default page;
-
-
+export default Cart;
