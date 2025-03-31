@@ -23,7 +23,7 @@ const FoodList = () => {
 
   return (
 
-    <div><FoodBadge data={categoriesWithFoods}/></div>
+    <div className='flex  flex-col w-full'><FoodBadge data={categoriesWithFoods}/></div>
   );
 };
 

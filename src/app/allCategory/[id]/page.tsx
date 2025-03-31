@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
 import FoodBadge from '@/app/component/FoodBadge'
-import CategoryList from '@/app/component/category'
 // Define the type for the data returned from the API (Food in this case)
 interface Food {
   _id: string;

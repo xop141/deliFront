@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import product from '../img/Food Image.png';  // Placeholder image
 import { CirclePlus, CircleMinus } from 'lucide-react';
@@ -29,17 +29,17 @@ interface FoodListProps {
 
 const FoodList: React.FC<FoodListProps> = ({ data }) => {
   console.log("asd");
-  
 
-  
+
+
   const [count, setCount] = useState<number>(1);
-  const [successMessage, setSuccessMessage] = useState<string>(''); 
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false); 
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const router = useRouter();
-const seeALL = (id)=>{
-  router.push(`/allCategory/${id}`)
-  
-}
+  const seeALL = (id: any) => {
+    router.push(`/allCategory/${id}`)
+
+  }
   // Function to handle order placement
   const orderButton = async (id: string) => {
     const token = window.localStorage.getItem('token');
@@ -52,7 +52,7 @@ const seeALL = (id)=>{
     setIsButtonDisabled(true);
 
     try {
-      const response = await axios.post("http://localhost:3030/order", order);
+      await axios.post("http://localhost:3030/order", order);
       setSuccessMessage("Order placed successfully!");
       setTimeout(() => setSuccessMessage(""), 2000);
     } catch (err) {
@@ -69,13 +69,17 @@ const seeALL = (id)=>{
   const minus = () => count > 1 && setCount(count - 1);
 
   return (
-    <div className="flex flex-col gap-2 px-[40px] py-[20px] w-full">
-      {/* Loop through each category */}
+    <div className="flex flex-wrap py-[20px] w-full">
+     
       {data.map((category, categoryIndex) => (
-        <div key={categoryIndex} className="flex flex-row flex-wrap justify-between w-full">
-       
-          <h2 className="text-3xl font-bold text-white mb-4">{category.categoryName}</h2>
-<Button onClick={()=>seeALL(category.categoryName)} className={`${data[0].foods.length > 6 ? "hidden" :"flex"}`}> See All </Button>
+        <div key={categoryIndex} className="flex flex-col flex-wrap justify-between w-full">
+<div className='flex justify-between'>
+         <h2 className="text-3xl font-bold text-white mb-4">{category.categoryName}</h2>
+          <Button onClick={() => seeALL(category.categoryName)} className={`${data[0].foods.length > 6 ? "hidden" : "flex"}`}> See All </Button>
+
+  </div>
+          {/* <h2 className="text-3xl font-bold text-white mb-4">{category.categoryName}</h2>
+          <Button onClick={() => seeALL(category.categoryName)} className={`${data[0].foods.length > 6 ? "hidden" : "flex"}`}> See All </Button> */}
           {/* Loop through each food in this category */}
           <div className="flex flex-row gap-5 flex-wrap">
             {category.foods.map((food, foodIndex) => (
