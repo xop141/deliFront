@@ -30,7 +30,7 @@ interface FoodListProps {
 const FoodList: React.FC<FoodListProps> = ({ data }) => {
   const [count, setCount] = useState<number>(1);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
-  const [successMessage, setSuccessMessage] = useState<string>('');
+
   const [openDialog, setOpenDialog] = useState<string | null>(null);  // To control dialog visibility
   const router = useRouter();
 
@@ -39,31 +39,34 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
   }
 
   // Function to handle order placement
-  const orderButton = async (id: string, closeDialog: () => void) => {
+  const orderButton = async (foodId: string, foodName: string, closeDialog: () => void) => {
     const token = window.localStorage.getItem('token');
     if (!token) {
       router.push("/login");
       return;
     }
-
+  
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-    const existingItemIndex = cart.findIndex((item: { id: string }) => item.id === id);
+  
+    // Check if the item already exists in the cart by foodId
+    const existingItemIndex = cart.findIndex((item: { id: string }) => item.id === foodId);
     if (existingItemIndex >= 0) {
-      cart[existingItemIndex].quantity += count;
+      cart[existingItemIndex].quantity += count;  // Increase quantity
     } else {
-      cart.push({ id: id, quantity: count });
+      cart.push({ id: foodId, foodName: foodName, quantity: count });  // Add the new item with both id and name      
     }
-
+  
+    // Save the updated cart back to localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
-
+  
     // Close the dialog after adding to the cart
     closeDialog();
+  
+    setCount(1);  // Reset the quantity to 1 after adding the item
 
-    setCount(1); // Reset the quantity after order
-    setSuccessMessage("Item added to cart successfully!");
     setIsButtonDisabled(false);
   };
+  
 
   // Functions for adjusting quantity
   const add = () => setCount(count + 1);
@@ -134,17 +137,15 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
 
                     {/* Place Order Button */}
                     <Button
-                      className="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition-all duration-300"
-                      onClick={() => orderButton(food._id, () => setOpenDialog(null))}
-                      disabled={isButtonDisabled}
-                    >
-                      {isButtonDisabled ? "Adding..." : "Add to Cart"}
-                    </Button>
+  className="w-full bg-red-500 text-white font-semibold py-3 rounded-lg hover:bg-red-600 transition-all duration-300"
+  onClick={() => orderButton(food._id, food.foodName, () => setOpenDialog(null))}
+  disabled={isButtonDisabled}
+>
+  Add to Cart
+</Button>
 
-                    {/* Success or Error Message */}
-                    {successMessage && (
-                      <p className="text-green-600 mt-3 text-sm">{successMessage}</p>
-                    )}
+
+              
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -157,16 +158,3 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
 };
 
 export default FoodList;
-
-// setIsButtonDisabled(true);
-
-    // try {
-    //   await axios.post("http://localhost:3030/order", order);
-    //   setSuccessMessage("Order placed successfully!");
-    //   setTimeout(() => setSuccessMessage(""), 2000);
-    // } catch (err) {
-    //   console.log(err);
-    //   setSuccessMessage("Failed to place the order. Please try again.");
-    // } finally {
-    //   setIsButtonDisabled(false);
-    // }

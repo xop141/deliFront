@@ -11,7 +11,7 @@ const FoodList = () => {
       try {
         const response = await axios.post('http://localhost:3030/food/list');
         setCategoriesWithFoods(response.data);
-        console.log(response);
+  
           // Set the response data (categories with foods)
       } catch (error) {
         console.error("Error fetching data:", error);

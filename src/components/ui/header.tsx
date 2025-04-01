@@ -6,19 +6,22 @@ import logo from '../../app/img/logo.png'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { ShoppingCart } from 'lucide-react';
-
+import Cart from '@/app/component/cart'
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const Header = () => {
+
+  
   const [token, setToken] = useState<string | null>(null); // State to store the token
   const router = useRouter();
 
   useEffect(() => {
-    // Check if we're on the client-side, then access localStorage
+
     if (typeof window !== "undefined") {
       const storedToken = window.localStorage.getItem('token');
-      setToken(storedToken); // Set the token to state
+      setToken(storedToken);
     }
-  }, []); // Empty dependency array ensures it only runs on the client-side
+  }, []);
 
   const login = () => {
     router.push('/login');
@@ -36,16 +39,14 @@ const Header = () => {
     router.push('/orderBoard')
   };
 
-  // const dashBoard = () => {
-  //   router.push('/dashBoard')
-  // };
+
 
   const logout = () => {
-    // Remove token from localStorage and update state
+
     window.localStorage.removeItem('token');
     setToken(null);
-    router.push('/');  // Redirect to homepage after logout
-    window.location.reload();
+    router.push('/'); 
+
   }
 
   return (
@@ -60,7 +61,7 @@ const Header = () => {
       </div>
 
       <div className='flex gap-[15px]'>
-        {/* Conditionally render based on token */}
+
         {!token ? (
           <>
             <Button variant="secondary" onClick={login}>Login</Button>
@@ -68,18 +69,26 @@ const Header = () => {
           </>
         ) : (
           <div className='flex gap-[12px]'>
+<Dialog>
 
-            <Button className='text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700' onClick={orderBoard}>
-              <ShoppingCart />
+  <DialogTrigger>
+  <Button className='text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700 relative' >
+              <ShoppingCart/>
+              <div  className='absolute top-[-7px] right-[-7px] font-[700] text-[20px]'>13</div>
             </Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogTitle>Cart</DialogTitle>
+    <Cart/>
+  </DialogContent>
+</Dialog>
+      
 
-            {/* <Button className='text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700' onClick={dashBoard}>
-              <CircleUserRound />
-            </Button> */}
-
-            {/* Add a logout button when user is logged in */}
             <Button className='text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700' onClick={logout}>
               Logout
+            </Button>
+            <Button className='text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700' onClick={orderBoard}>
+              orders
             </Button>
 
           </div>
