@@ -54,7 +54,7 @@ const CategoryList: React.FC = () => {
   };
 
   return (
-    <div className="py-[32px] flex flex-col gap-[32px]">
+    <div className="py-[32px] flex flex-col gap-[32px] items-center">
       <h1 className="text-[36px] font-[600] text-white">Categories</h1>
       <div className="flex gap-[10px]">
         {categories.map((category) => (

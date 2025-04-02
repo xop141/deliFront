@@ -67,6 +67,8 @@ const LoginPage = () => {
 
       // Redirect to homepage
       router.push('/');
+   
+
     } catch (error) {
       // Check if it's an AxiosError
       if (axios.isAxiosError(error)) {

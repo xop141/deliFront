@@ -31,14 +31,13 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
   const [count, setCount] = useState<number>(1);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
-  const [openDialog, setOpenDialog] = useState<string | null>(null);  // To control dialog visibility
+  const [openDialog, setOpenDialog] = useState<string | null>(null); 
   const router = useRouter();
 
   const seeALL = (id: any) => {
     router.push(`/allCategory/${id}`);
   }
 
-  // Function to handle order placement
   const orderButton = async (foodId: string, foodName: string, closeDialog: () => void) => {
     const token = window.localStorage.getItem('token');
     if (!token) {
@@ -48,7 +47,7 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
   
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
   
-    // Check if the item already exists in the cart by foodId
+
     const existingItemIndex = cart.findIndex((item: { id: string }) => item.id === foodId);
     if (existingItemIndex >= 0) {
       cart[existingItemIndex].quantity += count;  // Increase quantity
@@ -73,15 +72,15 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
   const minus = () => count > 1 && setCount(count - 1);
 
   return (
-    <div className="flex flex-wrap py-[20px] w-full">
+    <div className="flex flex-wrap py-[40px] w-full">
       {data.map((category, categoryIndex) => (
-        <div key={categoryIndex} className="flex flex-col flex-wrap justify-between w-full">
+        <div key={categoryIndex} className="flex flex-col flex-wrap justify-between w-full py-[50px]">
           <div className='flex justify-between'>
             <h2 className="text-3xl font-bold text-white mb-4">{category.categoryName}</h2>
             <Button onClick={() => seeALL(category.categoryName)} className={`${data[0].foods.length > 6 ? "hidden" : "flex"}`}> See All </Button>
           </div>
 
-          <div className="flex flex-row gap-5 flex-wrap">
+          <div className="flex flex-row gap-[50px] flex-wrap">
             {category.foods.map((food, foodIndex) => (
               <Dialog key={foodIndex} open={openDialog === food._id} onOpenChange={(isOpen) => setOpenDialog(isOpen ? food._id : null)}>
                 {/* Card Trigger (clickable to open modal) */}

@@ -6,135 +6,117 @@ import { useRouter } from 'next/navigation';
 import { Trash, CircleMinus, CirclePlus } from 'lucide-react';
 
 const Cart = () => {
-    const [isDisabled, setIsDisabled] = useState(false)
-    const router = useRouter();
-    const [data, setData] = useState<any[]>([]);
-    const token = localStorage.getItem('token');
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [data, setData] = useState<any[]>([]);
+  const token = localStorage.getItem('token');
+  const router = useRouter();
 
-    // ✅ Load cart data from localStorage on initial render
-    useEffect(() => {
-        const cartData = JSON.parse(localStorage.getItem('cart') || '[]');
-        setData(cartData);
-    }, []);
+  // Load cart data from localStorage when the component mounts
+  useEffect(() => {
+    setData(JSON.parse(localStorage.getItem('cart') || '[]'));
+  }, []);
 
-    // Place order function
-    const orderButton = async () => {
-        setIsDisabled(true)
-        if (!token) {
-            router.push("/login");
-            return;
-        }
+  const orderButton = async () => {
+    setIsDisabled(true);
 
-        // Get cart data from localStorage
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
-        if (cart.length === 0) {
-            console.error("Cart is empty");
-            return;
-        }
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (cart.length === 0) {
+      console.error("Cart is empty");
+      setIsDisabled(false);
+      return;
+    }
 
-        const order = {
-            userId: '67ead8a661d90242e22374b7',
-            foods: cart.map((item: { id: string; quantity: number }) => ({
-                foodId: item.id,
-                quantity: item.quantity,
-            })),
-        };
-
-        try {
-            const response = await axios.post("http://localhost:3030/order", order);
-
-            // Clear cart from localStorage & UI immediately after placing order
-            localStorage.removeItem("cart");
-            setData([]); // Clear UI without refreshing
-
-        } catch (error) {
-            console.error('Error placing order:', error);
-        } finally{
-            setIsDisabled(false)
-        }
+    const order = {
+      userId: '67ec8fb0fd9cdab04b2d99f5', // Example userId, replace with actual context
+      foods: cart.map((item: { id: string; quantity: number }) => ({
+        foodId: item.id,
+        quantity: item.quantity,
+      })),
     };
 
-    // Update cart item quantity
-    const updateQuantity = (id: string, action: 'increase' | 'decrease') => {
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    try {
+      await axios.post("http://localhost:3030/order", order);
+      localStorage.removeItem("cart");
+      setData([]);
+    } catch (error) {
+      console.error('Error placing order:', error);
+    } finally {
+      setIsDisabled(false);
+    }
+  };
 
-        const updatedCart = cart.map(item => {
-            if (item.id === id) {
-                if (action === 'increase') {
-                    item.quantity += 1;
-                } else if (action === 'decrease' && item.quantity > 1) {
-                    item.quantity -= 1;
-                }
-            }
-            return item;
-        });
+  const updateQuantity = (id: string, action: 'increase' | 'decrease') => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-        // Save the updated cart back to localStorage
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-        // Update the state to reflect changes in the UI
-        setData(updatedCart);
-    };
-
-    // Delete item from cart
-    const Delete = (id: string) => {
-        const cart = localStorage.getItem('cart');
-
-        if (cart) {
-            // Parse the cart string into an array
-            const parsedCart = JSON.parse(cart);
-
-            // Filter out the item with the matching id
-            const updatedCart = parsedCart.filter(item => item.id !== id);
-
-            // Save the updated cart back to localStorage
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-
-            // Update the state to reflect changes in the UI
-            setData(updatedCart);
-
-            console.log(updatedCart); // Optionally log the updated cart
-        } else {
-            console.log('No cart found in localStorage');
+    const updatedCart = cart.map(item => {
+      if (item.id === id) {
+        if (action === 'increase') {
+          item.quantity += 1;
+        } else if (action === 'decrease' && item.quantity > 1) {
+          item.quantity -= 1;
         }
-    };
+      }
+      return item;
+    });
 
-    return (
-        <div>
-            {data.length > 0 ? (
-                data.map((order, index) => (
-                    <div key={index} className="p-4 border border-gray-300 my-2 flex justify-between items-center">
-                        <div>
-                            <p> {order.foodName}</p>
-                            <div className='flex items-center gap-2'>
-                                <CirclePlus 
-                                    className='cursor-pointer hover:text-red-500'
-                                    onClick={() => updateQuantity(order.id, 'increase')}
-                                />
-                                {order.quantity}
-                                <CircleMinus 
-                                    className='cursor-pointer hover:text-red-500'
-                                    onClick={() => updateQuantity(order.id, 'decrease')}
-                                />
-                            </div>
-                        </div>
-                        <div className='flex flex-col justify-between items-center'>
-                            <Trash
-                                className='hover:text-red-500 rounded-full cursor-pointer'
-                                onClick={() => Delete(order.id)}
-                            />
-                           
-                        </div>
-                    </div>
-                ))
-            ) : (
-                <p>No items in cart</p>
-            )}
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    setData(updatedCart);
+  };
 
-            <Button variant={'destructive'} onClick={orderButton} disabled={isDisabled}>Place Order</Button>
-        </div>
-    );
+  const deleteItem = (id: string) => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const updatedCart = cart.filter(item => item.id !== id);
+
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    setData(updatedCart);
+  };
+
+  return (
+    <div className='w-full'>
+      {data.length > 0 ? (
+        data.map((order, index) => (
+          <div key={index} className="p-4 border border-gray-300 my-2 flex justify-between items-center">
+            <div>
+              <p>{order.foodName}</p>
+              <div className='flex items-center gap-2'>
+                <CirclePlus
+                  className='cursor-pointer hover:text-red-500'
+                  onClick={() => updateQuantity(order.id, 'increase')}
+                />
+                {order.quantity}
+                <CircleMinus
+                  className='cursor-pointer hover:text-red-500'
+                  onClick={() => updateQuantity(order.id, 'decrease')}
+                />
+              </div>
+            </div>
+            <div className='flex flex-col justify-between items-center'>
+              <Trash
+                className='hover:text-red-500 rounded-full cursor-pointer'
+                onClick={() => deleteItem(order.id)}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No items in cart</p>
+      )}
+
+      <Button 
+      className={`${data.length > 0 ? "flex" : "hidden"}`}
+        variant={'destructive'} 
+        onClick={orderButton} 
+        disabled={isDisabled}
+      >
+        Place Order
+      </Button>
+    </div>
+  );
 };
 
 export default Cart;
