@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Image from 'next/image';
 import product from '../img/Food Image.png';  // Placeholder image
 import { CirclePlus, CircleMinus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import axios from 'axios';
+import { Star } from 'lucide-react';
 
 
 
@@ -41,7 +41,7 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
       router.push("/login");
       return;
     }
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItemIndex = cart.findIndex((item: { id: string }) => item.id === foodId);
     if (existingItemIndex >= 0) {
       cart[existingItemIndex].quantity += count;
@@ -52,16 +52,27 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
     closeDialog();
     setCount(1);
     setIsButtonDisabled(false);
+    // handleClick()
   };
   const add = () => setCount(count + 1);
   const minus = () => count > 1 && setCount(count - 1);
+  //  const [update, setUpdate] = useState(0); // Set initial value to 0 or some condition
   
+  //   // This effect runs whenever the `update` state changes
+  //   useEffect(() => {
+  //     console.log(1);  // Log 1 every time the `update` state changes
+  //   }, [update]);  // Only rerun when `update` changes
+  
+  //   // Function to trigger an update
+  //   const handleClick = () => {
+  //     setUpdate(prev => prev === 0 ? 1 : 0); // Toggle between 1 and 0
+  //   };
   return (
     <div className="flex flex-wrap py-[40px] w-full">
       {data.map((category, categoryIndex) => (
         <div key={categoryIndex} className="flex flex-col flex-wrap justify-between w-full py-[50px]">
           <div className='flex justify-between'>
-            <h2 className="text-3xl font-bold text-white mb-4">{category.categoryName}</h2>
+            <h2 className="text-3xl font-bold text-black mb-4">{category.categoryName}</h2>
             <Button onClick={() => seeALL(category.categoryName)} className={`${data[0].foods.length > 6 ? "hidden" : "flex"}`}> See All </Button>
           </div>
           <div className="flex flex-row gap-[50px] flex-wrap">
@@ -71,6 +82,7 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
                   <div className="relative">
           
                     <Image src={product} alt="product img" className="rounded-lg w-full h-[250px] object-cover" />
+                 
                   </div>
                   <div className="flex flex-col">
                     <div className="flex justify-between items-center font-semibold">
@@ -78,8 +90,10 @@ const FoodList: React.FC<FoodListProps> = ({ data }) => {
                       <p className="text-lg">{food.price} $</p>
                     </div>
                     <p className="text-sm text-gray-600">{food.category}</p>
-                    
-
+                    <div className='flex gap-[10px] font-[700]'>
+                    <Star/><p>5 / {food.rate}</p>
+                    </div>
+             
                   </div>
                 </DialogTrigger>
                 <DialogContent>

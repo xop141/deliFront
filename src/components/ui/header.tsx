@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import Orders from '@/app/component/orders'
 
 const Header = () => {
+
   const [token, setToken] = useState<string | null>(null); // State to store the token
   const router = useRouter();
 const [cart, setCart ] = useState([])
@@ -19,11 +20,13 @@ const [cart, setCart ] = useState([])
       const storedToken = window.localStorage.getItem('token');
       setToken(storedToken);
     }
-  
     const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
     setCart(storedCart);
-    
+
   }, []);
+ 
+
+
 
   const login = () => router.push('/login');
   const signup = () => router.push('/signUp');
