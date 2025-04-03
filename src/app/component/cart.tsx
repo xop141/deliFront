@@ -11,7 +11,6 @@ const Cart = () => {
   const token = localStorage.getItem('token');
   const router = useRouter();
 
-  // Load cart data from localStorage when the component mounts
   useEffect(() => {
     setData(JSON.parse(localStorage.getItem('cart') || '[]'));
   }, []);
@@ -32,7 +31,7 @@ const Cart = () => {
     }
 
     const order = {
-      userId: '67ec8fb0fd9cdab04b2d99f5', // Example userId, replace with actual context
+      userId: '67ec8fb0fd9cdab04b2d99f5', //replace
       foods: cart.map((item: { id: string; quantity: number }) => ({
         foodId: item.id,
         quantity: item.quantity,

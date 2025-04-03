@@ -59,21 +59,20 @@ const LoginPage = () => {
     try {
       const response = await axios.post("http://localhost:3030/user/login", data);
 
-      // Clear error messages in case of success
+
       setErrorMessages([]);
 
-      // Store token in localStorage
+    
       localStorage.setItem('token', response.data.token);
 
-      // Redirect to homepage
       router.push('/');
    
 
     } catch (error) {
-      // Check if it's an AxiosError
+
       if (axios.isAxiosError(error)) {
         const errorResponse = error.response?.data;
-        // Handle error messages and display them
+        
         setErrorMessages([errorResponse?.message || "An error occurred during login."]);
       } else {
         setErrorMessages(["An unexpected error occurred."]);

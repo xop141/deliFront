@@ -13,12 +13,16 @@ import Orders from '@/app/component/orders'
 const Header = () => {
   const [token, setToken] = useState<string | null>(null); // State to store the token
   const router = useRouter();
-
+const [cart, setCart ] = useState([])
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = window.localStorage.getItem('token');
       setToken(storedToken);
     }
+  
+    const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    setCart(storedCart);
+    
   }, []);
 
   const login = () => router.push('/login');
@@ -62,11 +66,11 @@ const Header = () => {
               <DialogTrigger>
                 <Button className="text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700 relative">
                   <ShoppingCart />
-                  <div className="absolute top-[-7px] right-[-7px] font-[700] text-[20px]">13</div>
+                  <div className="absolute top-[-7px] right-[-7px] font-[700] text-[20px]">{cart.length}</div>
                 </Button>
               </DialogTrigger>
 
-              <DialogContent >
+              <DialogContent className='overflow-hidden' >
                 <div className="flex gap-[30px] mb-4">
                 
                   <DialogTitle
@@ -88,14 +92,13 @@ const Header = () => {
                   <Cart />
                 </div>
 
-                <div className={`${activeTab === 'order' ? "flex" : "hidden"} overflow-hidden`}>
+                <div className={`${activeTab === 'order' ? "flex" : "hidden"}`}>
                   <Orders />
                 </div>
                 </div>
               </DialogContent>
             </Dialog>
 
-            {/* Logout and Orders Button */}
             <div className="flex gap-[15px]">
               <Button className="text-white flex gap-[15px] rounded-full p-[20px] bg-gray-700 hover:bg-red-700" onClick={logout}>
                 Logout

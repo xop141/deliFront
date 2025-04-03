@@ -22,12 +22,14 @@ const CategoryList: React.FC = () => {
   const [data, setData] = useState<Food[]>([]); // To store the food data
   const router = useRouter();
 
-  // Fetch categories from the API using axios
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get('http://localhost:3030/category');
-        setCategories(response.data); // Set the fetched categories to the state
+        setCategories(response.data);
+       
+        
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -39,18 +41,24 @@ const CategoryList: React.FC = () => {
   // Fetch food data for the selected category
   const fetchData = async (categoryName: string) => {
     try {
+      const test = 1
       const res = await axios.post("http://localhost:3030/food/list", { categoryName });
-      setData(res.data); // Set the fetched food data to the state
+
+      
+      
+      setData(res.data); 
+      
+      
     } catch (error) {
       console.error("Error fetching food data:", error);
     }
   };
 
-  // Handle category selection
+
   const handleCategorySelection = (categoryName: string) => {
-    setSelectedCategoryId(categoryName); // Update the selected category
-    router.push(`?id=${categoryName}`); // Update the URL with the selected category
-    fetchData(categoryName); // Fetch food data based on the selected category
+    setSelectedCategoryId(categoryName); 
+    router.push(`?id=${categoryName}`);
+    fetchData(categoryName); 
   };
 
   return (
@@ -69,7 +77,7 @@ const CategoryList: React.FC = () => {
         ))}
       </div>
 
-      {/* Render the FoodBadge component only if data is available */}
+
       {data.length > 0 ? (
         <FoodBadge data={data} />
       ) : (
